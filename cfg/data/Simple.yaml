@@ -1,0 +1,10 @@
+path: ../Anchor-base/datasets/Simple
+train: # train images (relative to 'path')
+  - images/train
+val: # val images (relative to 'path')
+  - images/val
+test: # test images (optional)
+  - images/val
+# Classes
+names:
+  0: cell
