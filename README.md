@@ -15,7 +15,7 @@ The data generator mentioned in the paper is specifically implemented in [./data
 Additionally, the [./dataprocess](./dataprocess) folder contains scripts that can convert various dataset formats, including ([yolo2coco](./dataprocess/yolo2coco.py), [yolo2labelme](./dataprocess/yolo2labelme.py), [labelme2yolo](./dataprocess/labelme2yolo.py), [labelme2coco](./dataprocess/labelme2coco.py)), with specific usage instructions detailed at the beginning of each file.
 
 ### Datasets
-We store the dataset in *[DWTAL-s](https://drive.google.com/file/d/1i4meTuVevdtEUd7wde59Y7KzR27Dj9QF)* and *[DWTAL-l]()* by the YOLO dataset format, for example:
+We store the dataset in *[DWTAL-s](https://drive.google.com/file/d/1i4meTuVevdtEUd7wde59Y7KzR27Dj9QF)* and *[DWTAL-l](https://drive.google.com/file/d/1wJiRt2u7sY9uqZxJtSJiWy_Zhu87yQOU)* by the YOLO dataset format, for example:
 - DWTAL-s
     - image
         - train
@@ -32,9 +32,9 @@ We store the dataset in *[DWTAL-s](https://drive.google.com/file/d/1i4meTuVevdtE
             - label.txt
 If you need other formats, you can use the scripts in the [./dataprocess](./dataprocess) folder for conversion.
 
-Additionally, we have provided the labelme format for the corresponding dataset, which can be found under *DWTAL-s.json.zip* and *DWTAL-L.json.zip*. You can place the images and JSON labels in the same folder and use labelme to open the images and view the annotations.
+Additionally, we have provided the labelme format for the corresponding dataset, which can be found under *[DWTAL-s.json.zip](https://drive.google.com/file/d/1_FJTwJWV3AwnaLHhpwGq9K4t-ywCfmV-)* and *[DWTAL-L.json.zip](https://drive.google.com/file/d/10H2oc_kQIlHyHXim4xSSrwDPivOciw-8)*. You can place the images and JSON labels in the same folder and use labelme to open the images and view the annotations.
 
-Finally, we have also provided a dataset with logical coordinates corresponding to the DWTAL-l dataset, located in *DWTAL-l.logical.zip*, to advance the development of deformable table structure recognition.
+Finally, we have also provided a dataset with logical coordinates corresponding to the DWTAL-l dataset, located in *[DWTAL-l.logical.zip](https://github.com/justliulong/OGHF/releases/download/v1.0.0/DTAL-l.local.zip)*, to advance the development of deformable table structure recognition.
 
 ## Model
 The model structure mentioned in the paper is specifically implemented in [./cfg/models/segment/og-hfyolo.yaml](./cfg/models/segment/og-hfyolo.yaml).
