@@ -447,11 +447,7 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
             args = [ch[f]]
         elif m is Concat:
             c2 = sum(ch[x] for x in f)
-        elif m is ScalSeq:
-            c2 = args[0]
         elif m is Add:
-            c2 = args[0]
-        elif m is attention_model:
             c2 = args[0]
         # TODO: channel, gw, gd
         elif m in {Detect, Segment}:

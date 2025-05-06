@@ -854,36 +854,6 @@ class DownSample(nn.Module):
         return x
 
 
-class ScalSeq(nn.Module):
-
-    def __init__(self, channel):
-        super(ScalSeq, self).__init__()
-        self.conv1 = Conv(512, channel, 1)
-        self.conv2 = Conv(1024, channel, 1)
-        self.conv3d = nn.Conv3d(channel, channel, kernel_size=(1, 1, 1))
-        self.bn = nn.BatchNorm3d(channel)
-        # self.act = nn.LeakyReLU(0.1)
-        self.act = nn.SiLU(inplace=True)
-        self.pool_3d = nn.MaxPool3d(kernel_size=(3, 1, 1))
-
-    def forward(self, x):
-        p3, p4, p5 = x[0], x[1], x[2]  # 大特征图、中特征图、小特征图
-        # p4_2 = self.conv1(p4) # 貌似此处通道数必须要为512
-        p4 = F.interpolate(self.conv1(p4), p3.size()[2:], mode='nearest')  # channel and size adjustment to p3
-        # p5_2 = self.conv2(p5)
-        p5 = F.interpolate(self.conv2(p5), p3.size()[2:], mode='nearest')  # channel and size adjustment to p3
-        p3 = torch.unsqueeze(p3, -3)  # (c,h,w) -> (1,c,h,w), p3_3d
-        p4 = torch.unsqueeze(p4, -3)  # (c,h,w) -> (1,c,h,w), p4_3d
-        p5 = torch.unsqueeze(p5, -3)  # (c,h,w) -> (1,c,h,w), p5_3d
-        # combine = torch.cat([p3,p4,p5],dim = 2)
-        # conv_3d = self.conv3d(torch.cat([p3,p4,p5],dim = 2))
-        # bn = self.bn(self.conv3d(torch.cat([p3,p4,p5],dim = 2)))
-        # act = self.act(self.bn(self.conv3d(torch.cat([p3,p4,p5],dim = 2))))
-        x = self.pool_3d(self.act(self.bn(self.conv3d(torch.cat([p3, p4, p5], dim=2)))))
-        del p3, p4, p5
-        x = torch.squeeze(x, 2)
-        return x
-
 
 class Add(nn.Module):
     # Concatenate a list of tensors along dimension
@@ -893,96 +863,6 @@ class Add(nn.Module):
     def forward(self, x):
         # input1,input2 = x[0],x[1]
         x = x[0] + x[1]
-        return x
-
-
-class channel_att(nn.Module):
-
-    def __init__(self, channel, b=1, gamma=2):
-        super(channel_att, self).__init__()
-        kernel_size = int(abs((math.log(channel, 2) + b) / gamma))
-        kernel_size = kernel_size if kernel_size % 2 else kernel_size + 1
-
-        self.avg_pool = nn.AdaptiveAvgPool2d(1)
-        self.conv = nn.Conv1d(1, 1, kernel_size=kernel_size, padding=(kernel_size - 1) // 2, bias=False)
-        self.sigmoid = nn.Sigmoid()
-
-    def forward(self, x):
-        y = self.avg_pool(x)
-        y = y.squeeze(-1)
-        y = y.transpose(-1, -2)
-        y = self.conv(y).transpose(-1, -2).unsqueeze(-1)
-        y = self.sigmoid(y)
-        return x * y.expand_as(x)
-
-
-class local_att(nn.Module):
-
-    def __init__(self, channel, reduction=16):
-        super(local_att, self).__init__()
-
-        self.conv_1x1 = nn.Conv2d(in_channels=channel,
-                                  out_channels=channel // reduction,
-                                  kernel_size=1,
-                                  stride=1,
-                                  bias=False)
-
-        self.relu = nn.ReLU(inplace=True)
-        self.bn = nn.BatchNorm2d(channel // reduction)
-
-        self.F_h = nn.Conv2d(in_channels=channel // reduction,
-                             out_channels=channel,
-                             kernel_size=1,
-                             stride=1,
-                             bias=False)
-        self.F_w = nn.Conv2d(in_channels=channel // reduction,
-                             out_channels=channel,
-                             kernel_size=1,
-                             stride=1,
-                             bias=False)
-
-        self.sigmoid_h = nn.Sigmoid()
-        self.sigmoid_w = nn.Sigmoid()
-
-    def forward(self, x):
-        _, _, h, w = x.size()
-        '''不理解他为什么要提取x和y方向的特征图像，好像这种特征可解释性不高'''
-        # x_h = torch.mean(x, dim = 3, keepdim = True).permute(0, 1, 3, 2)
-        # x_w = torch.mean(x, dim = 2, keepdim = True)
-
-        x_cat_conv_relu = self.relu(
-            self.bn(
-                self.conv_1x1(
-                    torch.cat(
-                        (torch.mean(x, dim=3, keepdim=True).permute(0, 1, 3, 2), torch.mean(x, dim=2, keepdim=True)),
-                        3))))
-
-        x_cat_conv_split_h, x_cat_conv_split_w = x_cat_conv_relu.split([h, w], 3)
-
-        s_h = self.sigmoid_h(self.F_h(x_cat_conv_split_h.permute(0, 1, 3, 2)))
-        s_w = self.sigmoid_w(self.F_w(x_cat_conv_split_w))
-
-        out = x * s_h.expand_as(x) * s_w.expand_as(x)
-        return out
-
-
-class attention_model(nn.Module):
-    '''
-    Concatenate a list of tensors along dimension
-    #!在论文中，这个模块的名字是CPAM
-    '''
-
-    def __init__(self, ch=256):
-        super().__init__()
-        self.channel_att = channel_att(ch)
-        self.local_att = local_att(ch)
-
-    def forward(self, x):
-        # print("=>17", x[0].shape, "=> -1", x[1].shape)
-        # input1,input2 = x[0],x[1]
-        # input1 = self.channel_att(input1)
-        x = self.channel_att(x[0]) + x[1]
-        x = self.local_att(x)
         return x
 
 
