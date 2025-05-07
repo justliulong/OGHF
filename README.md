@@ -15,15 +15,17 @@ The data generator mentioned in the paper is specifically implemented in [./data
 Additionally, the [./dataprocess](./dataprocess) folder contains scripts that can convert various dataset formats, including ([yolo2coco](./dataprocess/yolo2coco.py), [yolo2labelme](./dataprocess/yolo2labelme.py), [labelme2yolo](./dataprocess/labelme2yolo.py), [labelme2coco](./dataprocess/labelme2coco.py)), with specific usage instructions detailed at the beginning of each file.
 
 ### Datasets
+Both datasets follow identical partitioning protocols. To ensure uniform distribution of deformation types across training and test sets, 80\% of each dataset is randomly allocated for training and 20\% for testing. Final counts reach 7,012 training and 1,753 test images in DWTAL-s, versus 15,616 training and 3,904 test images in DWTAL-l.
+
 #### *🔥YOLO version:*
 
 We store the YOLO dataset format in Google Drive, you can download: 
 
 *[DWTAL-s](https://drive.google.com/file/d/1i4meTuVevdtEUd7wde59Y7KzR27Dj9QF)* 
 
- *[DWTAL-l](https://drive.google.com/file/d/1wJiRt2u7sY9uqZxJtSJiWy_Zhu87yQOU)* 
+*[DWTAL-l](https://drive.google.com/file/d/1wJiRt2u7sY9uqZxJtSJiWy_Zhu87yQOU)* 
  
- the YOLO dataset format as follows:
+the YOLO dataset format as follows:
 ```
 dataset
 ├──images
@@ -47,7 +49,7 @@ We store the COCO dataset format in Huggingface, you can download:
 
 *[DWTAL-s](https://huggingface.co/datasets/justliulong/DWTAL/resolve/main/DTAL-s.coco.zip)* 
 
- *[DWTAL-l](https://huggingface.co/datasets/justliulong/DWTAL/resolve/main/DTAL-l.coco.zip)* 
+*[DWTAL-l](https://huggingface.co/datasets/justliulong/DWTAL/resolve/main/DTAL-l.coco.zip)* 
 
  *or* You can download the COCO versions of the dataset at one time through the following command
 
@@ -56,6 +58,7 @@ from datasets import load_dataset
 dataset = load_dataset("justliulong/DWTAL")
  ```
 
+the COCO dataset format as follows:
  ```
  output
 ├── annotations
@@ -72,7 +75,17 @@ dataset = load_dataset("justliulong/DWTAL")
 
 Additionally, we have provided the labelme format (without images) for the corresponding dataset, which can be found under *[DWTAL-s.json.zip](https://drive.google.com/file/d/1_FJTwJWV3AwnaLHhpwGq9K4t-ywCfmV-)* and *[DWTAL-L.json.zip](https://drive.google.com/file/d/10H2oc_kQIlHyHXim4xSSrwDPivOciw-8)*. You can place the images and JSON labels in the same folder and use labelme to open the images and view the annotations.
 
-Finally, we have also provided a dataset with logical coordinates corresponding to the DWTAL-l dataset, located in *[DWTAL-l.logical.zip](https://github.com/justliulong/OGHF/releases/download/v1.0.0/DTAL-l.local.zip)*, to advance the development of deformable table structure recognition.
+Finally, we have also provided the dataset with logical coordinates corresponding to DWTAL dataset, to advance the development of deformable table structure recognition:
+
+The dataset with logical coordinate annotations is published in Releases (without images. The images need to be downloaded from the COCO version or YOLO version of the dataset). The logical coordinate annotations of all the images in the DWTAL-l dataset are stored in *[DWTAL-l.logical.zip](https://github.com/justliulong/OGHFYOLO/releases/download/v1.0.0/DTAL-l.logical.zip)*, containing "logical_coordinates" for each cell: 
+```json
+{"start_row": a, "end_row": b, "start_col": c, "end_col": d}
+```
+- logical_coordinates uses 1-base, that is, the minimum of start_row and start_col starts from 1 instead of 0.
+
+and the entire html sequence of the table. The logical coordinate annotations of approximately 80% of the images in the DWTAL-s dataset are stored in *[DWTAL-s.logical.zip](https://github.com/justliulong/OGHFYOLO/releases/download/v1.0.0/DTAL-s.logical.zip)*, including the html sequence of each table.
+
+
 
 ## Model
 The model structure mentioned in the paper is specifically implemented in [./cfg/models/segment/og-hfyolo.yaml](./cfg/models/segment/og-hfyolo.yaml).
