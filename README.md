@@ -15,7 +15,7 @@ The data generator mentioned in the paper is specifically implemented in [./data
 Additionally, the [./dataprocess](./dataprocess) folder contains scripts that can convert various dataset formats, including ([yolo2coco](./dataprocess/yolo2coco.py), [yolo2labelme](./dataprocess/yolo2labelme.py), [labelme2yolo](./dataprocess/labelme2yolo.py), [labelme2coco](./dataprocess/labelme2coco.py)), with specific usage instructions detailed at the beginning of each file.
 
 ### Datasets
-Both datasets follow identical partitioning protocols. To ensure uniform distribution of deformation types across training and test sets, 80\% of each dataset is randomly allocated for training and 20\% for testing. Final counts reach 7,012 training and 1,753 test images in DWTAL-s, versus 15,616 training and 3,904 test images in DWTAL-l.
+Deformed Wire Table for Small (DWTAL-s) with 8,765 simpler tables mainly derived from TAL-OCR, and Deformed Wire Table for Large (DWTAL-l) containing 19,520 complex tables mainly expanded from WTW. Both datasets follow identical split strategy. To ensure uniform distribution of deformation types across training and test sets, 80\% of each dataset is randomly allocated for training and 20\% for testing. Final counts reach 7,012 training and 1,753 test images in DWTAL-s, versus 15,616 training and 3,904 test images in DWTAL-l.
 
 #### *🔥YOLO version:*
 
