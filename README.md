@@ -79,7 +79,12 @@ Finally, we have also provided the dataset with logical coordinates correspondin
 
 The dataset with logical coordinate annotations is published in Releases (without images. The images need to be downloaded from the COCO version or YOLO version of the dataset). The logical coordinate annotations of all the images in the DWTAL-l dataset are stored in *[DWTAL-l.logical.zip](https://github.com/justliulong/OGHFYOLO/releases/download/v1.0.0/DTAL-l.logical.zip)*, containing "logical_coordinates" for each cell: 
 ```json
-{"start_row": a, "end_row": b, "start_col": c, "end_col": d}
+{
+  "start_row": a,
+  "end_row": b, 
+  "start_col": c, 
+  "end_col": d
+}
 ```
 - logical_coordinates uses 1-base, that is, the minimum of start_row and start_col starts from 1 instead of 0.
 
